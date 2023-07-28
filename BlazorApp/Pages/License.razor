@@ -1,53 +1,78 @@
-﻿@page "/license"
+﻿@page "/"
 @inject NavigationManager NavManager
+@inject IJSRuntime _jsRuntime
 
 <PageTitle>License</PageTitle>
 
 <h1>License</h1>
 
-@if(ShowSpinner)
+@if (ShowSpinner)
 {
-   <div class="spinner"></div>
+    <div class="spinner"></div>
 }
 
 <div class="container-fluid">
     <div class="content">
         <label for="uname"><b>Username</b></label>
         <input @bind-value="Username" disabled="@ShowSpinner" placeholder="Enter Username" required />
+        @if (!string.IsNullOrWhiteSpace(UserNmErrorMsg))
+        {
+            <label class="validation-message">@UserNmErrorMsg</label>
+        }
     </div>
     <div class="content">
         <label for="pname"><b>Password</b></label>
         <input @bind-value="Password" disabled="@ShowSpinner" type="password" placeholder="Enter Password" required />
+        @if (!string.IsNullOrWhiteSpace(PasswdErrorMsg))
+        {
+            <label class="validation-message">@PasswdErrorMsg</label>
+        }
     </div>
-    <button class="btn-primary" disabled="@ShowSpinner" @onclick="OnValidLicense">Valid License</button>
-    <div class="content">
-        <label class="validation-message">@ErrorMsg</label>
-    </div>
+    <button class="btn-primary" disabled="@ShowSpinner" @onclick="OnValidLicense">Validate License</button>
 </div>
 
 @code {
     public string Username { get; set; } = string.Empty;
     public string Password { get; set; } = string.Empty;
-    public string ErrorMsg { get; set; } = string.Empty;
+    public string UserNmErrorMsg { get; set; } = string.Empty;
+    public string PasswdErrorMsg { get; set; } = string.Empty;
     public bool ShowSpinner { get; set; } = false;
 
     private DateTime dt = new DateTime(2023, 8, 30, 11, 0, 0);
 
     public async Task OnValidLicense()
     {
-        if (Username != "Admin" && Password != "Admin@123")
+        string msg = string.Empty;
+        UserNmErrorMsg = PasswdErrorMsg = string.Empty;
+        if (!string.IsNullOrWhiteSpace(Username) && !string.IsNullOrWhiteSpace(Password))
         {
-            ErrorMsg = "Invalid credentials! Verify username and password.";
-            return;
+            if (Username != "Admin" && Password != "Admin@123")
+            {
+                await _jsRuntime.InvokeVoidAsync("ShowAlert", "error", "Invalid credentials! Verify username and password.");
+                return;
+            }
+            else
+            {
+                UserNmErrorMsg = PasswdErrorMsg = string.Empty;
+                var diff = dt - DateTime.Now;
+                msg = $"Your license will expire after {diff.Days} days, {diff.Hours} hours and {diff.Minutes} minutes.";
+
+                ShowSpinner = true;
+                await Task.Delay(3000);
+                ShowSpinner = false;
+                NavManager.NavigateTo($"/home/{msg}");
+            }
         }
-
-        ErrorMsg = string.Empty;
-        var diff = dt - DateTime.Now;
-        var msg = $"Your license will expired after {diff.Days} days, {diff.Hours} hours and {diff.Minutes} minutes.";
-
-        ShowSpinner = true;
-        await Task.Delay(3000);
-        ShowSpinner = false;
-        NavManager.NavigateTo($"/home/{msg}");
+        else
+        {
+            if (string.IsNullOrWhiteSpace(Username))
+            {
+                UserNmErrorMsg = "Username cannot be blank";
+            }
+            if (string.IsNullOrWhiteSpace(Password))
+            {
+                PasswdErrorMsg = "Password cannot be blank";
+            }
+        }
     }
 }
