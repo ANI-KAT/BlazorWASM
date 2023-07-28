@@ -1,5 +1,11 @@
-﻿<h3>Home</h3>
+﻿@page "/home/{LicenseInfo}"
+
+<PageTitle>Home</PageTitle>
+
+<h3>@LicenseInfo</h3>
 
 @code {
 
+    [Parameter]
+    public string LicenseInfo { get; set; } = string.Empty;
 }
