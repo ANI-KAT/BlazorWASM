@@ -1,6 +1,8 @@
 ﻿@page "/"
+@using BlazorApp.Data;
 @inject NavigationManager NavManager
 @inject IJSRuntime _jsRuntime
+@inject ApiHelper _api
 
 <PageTitle>License</PageTitle>
 
@@ -42,6 +44,9 @@
 
     public async Task OnValidLicense()
     {
+        //var response = await _api.AuthicateUser("john@mail.com", "changeme");
+        //var user = await _api.GetUserProfile();
+
         string msg = string.Empty;
         UserNmErrorMsg = PasswdErrorMsg = string.Empty;
         if (!string.IsNullOrWhiteSpace(Username) && !string.IsNullOrWhiteSpace(Password))
