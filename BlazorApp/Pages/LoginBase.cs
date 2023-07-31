@@ -1,4 +1,4 @@
-﻿using BlazorApp.Services;
+﻿using BlazorApp.Data;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 
@@ -18,11 +18,8 @@ namespace BlazorApp.Pages
         [Inject]
         public IJSRuntime _jsRuntime { get; set; }
 
-
         [Inject]
-        public IUserService UserService { get; set; }
-
-        private DateTime dt = new DateTime(2023, 8, 30, 11, 0, 0);
+        public ApiHelper ApiHelper { get; set; }
 
         public async Task OnValidLicense()
         {
@@ -31,17 +28,13 @@ namespace BlazorApp.Pages
             if (!string.IsNullOrWhiteSpace(Username) && !string.IsNullOrWhiteSpace(Password))
             {
                 ShowSpinner = true;
-                var result = await UserService.Login(new UserRequest()
-                {
-                    email = Username,
-                    password = Password
-                });
+                var result = await ApiHelper.AuthicateUser(Username, Password);
                 ShowSpinner = false;
 
                 if (result == null)
                     await _jsRuntime.InvokeVoidAsync("ShowAlert", "error", "Server not responding.");
                 else
-                    NavManager.NavigateTo($"/license/{result.access_token}");
+                    NavManager.NavigateTo($"/license");
             }
             else
             {
