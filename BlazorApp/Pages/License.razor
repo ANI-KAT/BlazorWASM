@@ -1,6 +1,8 @@
-﻿@page "/license/{AccessCode}"
+﻿@page "/"
+@using BlazorApp.Data;
 @inject NavigationManager NavManager
 @inject IJSRuntime _jsRuntime
+@inject ApiHelper _api
 
 <PageTitle>License</PageTitle>
 
@@ -38,14 +40,13 @@
     public string PasswdErrorMsg { get; set; } = string.Empty;
     public bool ShowSpinner { get; set; } = false;
 
-    [Parameter]
-    public string AccessCode { get; set; } = string.Empty;
-
-
     private DateTime dt = new DateTime(2023, 8, 30, 11, 0, 0);
 
     public async Task OnValidLicense()
     {
+        //var response = await _api.AuthicateUser("john@mail.com", "changeme");
+        //var user = await _api.GetUserProfile();
+
         string msg = string.Empty;
         UserNmErrorMsg = PasswdErrorMsg = string.Empty;
         if (!string.IsNullOrWhiteSpace(Username) && !string.IsNullOrWhiteSpace(Password))
@@ -78,11 +79,5 @@
                 PasswdErrorMsg = "Password cannot be blank";
             }
         }
-    }
-
-    protected override Task OnInitializedAsync()
-    {
-        // Call Get User Detail Api 
-        return base.OnInitializedAsync();
     }
 }
