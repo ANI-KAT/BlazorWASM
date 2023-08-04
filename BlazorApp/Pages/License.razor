@@ -1,5 +1,6 @@
 ﻿@page "/license"
 @using BlazorApp.Data;
+@using BlazorApp.Helpers;
 @inject NavigationManager NavManager
 @inject IJSRuntime _jsRuntime
 @inject ApiHelper _api
@@ -41,6 +42,15 @@
     public bool ShowSpinner { get; set; } = false;
 
     private DateTime dt = new DateTime(2023, 8, 30, 11, 0, 0);
+
+    [Inject]
+    NavbarService navbarService { get; set; }
+
+    protected override void OnInitialized()
+    {
+        navbarService.ShowNavbar();
+    }
+
 
     public async Task OnValidLicense()
     {

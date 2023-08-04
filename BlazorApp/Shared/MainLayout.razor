@@ -1,10 +1,14 @@
-﻿@inherits LayoutComponentBase
+﻿@using BlazorApp.Helpers;
+
+@inherits LayoutComponentBase
 
 <div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
-
+    @if (navbarService.IsVisible)
+        {
+            <div class="sidebar">
+                 <NavMenu />
+            </div>
+        }
     <main>
         <div class="top-row px-4">
             <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
@@ -15,3 +19,19 @@
         </article>
     </main>
 </div>
+
+@code {
+    [Inject] private NavbarService navbarService { get; set; }
+    private bool isNavbarVisible = true;
+
+    protected override void OnInitialized()
+    {
+        navbarService.OnNavbarVisibilityChanged += HandleNavbarVisibilityChanged;
+    }
+
+    private void HandleNavbarVisibilityChanged(bool isVisible)
+    {
+        isNavbarVisible = isVisible;
+        StateHasChanged();
+    }
+}

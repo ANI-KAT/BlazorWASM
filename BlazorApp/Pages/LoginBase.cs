@@ -1,6 +1,9 @@
 ﻿using BlazorApp.Data;
+using BlazorApp.Helpers;
+using BlazorApp.Shared;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
+using System;
 
 namespace BlazorApp.Pages
 {
@@ -21,6 +24,15 @@ namespace BlazorApp.Pages
         [Inject]
         public ApiHelper ApiHelper { get; set; }
 
+        [Inject]
+        NavbarService navbarService { get; set; }
+
+        protected override void OnInitialized()
+        {
+            navbarService.HideNavbar();
+        }
+
+
         public async Task OnValidLicense()
         {
             string msg = string.Empty;
@@ -34,7 +46,9 @@ namespace BlazorApp.Pages
                 if (result == null)
                     await _jsRuntime.InvokeVoidAsync("ShowAlert", "error", "Server not responding.");
                 else
+                {
                     NavManager.NavigateTo($"/license");
+                }
             }
             else
             {
