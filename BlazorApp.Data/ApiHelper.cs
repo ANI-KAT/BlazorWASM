@@ -28,4 +28,9 @@ public class ApiHelper
         client.DefaultRequestHeaders.Add("Authorization", $"Bearer {_token}");
         return await client.GetFromJsonAsync<UserResponse?>("auth/profile");
     }
+
+    public async Task<List<UserResponse>?> GetUsers()
+    {
+        return await client.GetFromJsonAsync<List<UserResponse>?>("users");
+    }
 }

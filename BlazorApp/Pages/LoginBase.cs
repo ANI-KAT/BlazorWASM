@@ -35,7 +35,6 @@ namespace BlazorApp.Pages
 
         public async Task OnValidLicense()
         {
-            string msg = string.Empty;
             UserNmErrorMsg = PasswdErrorMsg = string.Empty;
             if (!string.IsNullOrWhiteSpace(Username) && !string.IsNullOrWhiteSpace(Password))
             {

@@ -34,7 +34,7 @@
     }
 
 
-    public async Task OnValidLicense()
+    public void OnValidLicense()
     {
         //var response = await _api.AuthicateUser("john@mail.com", "changeme");
         //var user = await _api.GetUserProfile();
@@ -42,9 +42,6 @@
         var diff = dt - DateTime.Now;
         var msg = $"Your license will expire after {diff.Days} days, {diff.Hours} hours and {diff.Minutes} minutes.";
 
-        ShowSpinner = true;
-        await Task.Delay(3000);
-        ShowSpinner = false;
         NavManager.NavigateTo($"/home/{msg}");
     }
 

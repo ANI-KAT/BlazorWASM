@@ -1,22 +1,55 @@
 ﻿@page "/home/{LicenseInfo}"
+@using BlazorApp.Data;
+@using BlazorApp.Core.Models;
 @using BlazorApp.Helpers;
+
+@inject ApiHelper _api
 
 <PageTitle>Home</PageTitle>
 
 <h3>@LicenseInfo</h3>
+
+
+@if (ShowSpinner)
+{
+    <div class="spinner"></div>
+}
+
+<ul class="list-unstyled">
+    @foreach (var item in users)
+    {
+        <li class="media my-3">
+            <div class="media-img-wrapper mr-2">
+                <img class="media-img" src="@item.Avatar" alt="@item.Id" />
+            </div>
+            <div class="media-body">
+                <h4>@item.Name</h4>
+                <h6>@item.Role</h6>
+                <p>@item.Email</p>
+            </div>
+        </li>
+    }
+</ul>
 
 @code {
 
     [Parameter]
     public string LicenseInfo { get; set; } = string.Empty;
 
-
     [Inject]
     NavbarService navbarService { get; set; }
 
-    protected override void OnInitialized()
-    {
-        navbarService.ShowNavbar();
-    }
+    public bool ShowSpinner { get; set; } = false;
 
+    private List<UserResponse> users = new List<UserResponse>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        ShowSpinner = true;
+        navbarService.ShowNavbar();
+        var result = await _api.GetUsers();
+        if (result != null)
+            users = result.Take<UserResponse>(5).ToList();
+        ShowSpinner = false;
+    }
 }
